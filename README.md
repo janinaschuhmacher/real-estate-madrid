@@ -1,7 +1,11 @@
 # Explore real estate data for Madrid using idealista
 
 The goal of this project is to analyze rental prices in Madrid across different neighborhoods, as well as to visualize price developments over time. 
-The data is taken from the idealista API (access can be requested here: https://developers.idealista.com/access-request (link last used on 04.11.2023).
+The data is taken from the idealista API (access can be requested here: https://developers.idealista.com/access-request (link last used on 04.11.2023)).
+
+![Picture of roofs in Madrid](Madrid_Foto.jpeg)
+*Picture retrieved on 05.11.2023 from https://pixabay.com/de/photos/madrid-spanien-sonnenuntergang-2714570/ by Stan89, license: https://pixabay.com/de/service/license-summary/*
+
 
 ## About the API
 
