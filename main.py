@@ -1,5 +1,8 @@
 import os
-from functions.get_bearer_access_token import (get_bearer_access_token, encode_api_credentials)
+from functions.get_bearer_access_token import (
+    get_bearer_access_token,
+    encode_api_credentials,
+)
 
 # API key and secret are saved as environment variables
 secret = os.getenv("IDEALISTA_SECRET")

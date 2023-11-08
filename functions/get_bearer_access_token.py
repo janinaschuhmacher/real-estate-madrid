@@ -29,9 +29,10 @@ def get_bearer_access_token(
     response = requests.post(url, headers=headers, data=data)
     assert (
         response.status_code == 200
-    ), """get_bearer_access_token: API Call failed with status code {status_code}.
-        No bearer access token was retrieved.""".format(
-        status_code=response.status_code
+    ), """get_bearer_access_token: API Call failed with status code {status_code}
+            and message {text}.
+            No bearer access token was retrieved.""".format(
+        status_code=response.status_code, text=response.text
     )
 
     dict_resp = ast.literal_eval(response.text)
@@ -41,7 +42,11 @@ def get_bearer_access_token(
     ), "get_bearer_access_token: No bearer access token was retrieved."
 
     expiration_secs = dict_resp["expires_in"]
-    print("Bearer access token expires in:", timedelta(seconds=expiration_secs), "(hh:mm:ss)")
+    print(
+        "Bearer access token expires in:",
+        timedelta(seconds=expiration_secs),
+        "(hh:mm:ss)",
+    )
 
     return access_token
 
