@@ -9,6 +9,9 @@ def retrieve_data_from_idealista(
     request_data: str,
     access_token: str,
 ) -> pd.DataFrame:
+    """
+    Function definition
+    """
     # build the complete request
     headers = CaseInsensitiveDict()
     headers["Authorization"] = "Bearer " + access_token
@@ -24,18 +27,34 @@ def retrieve_data_from_idealista(
         """.format(
         status_code=response.status_code, text=response.text
     )
-    print(response.text)
+    # print(response.text)
     data = json.loads(response.text)
-    data = pd.DataFrame.from_dict(data["elementList"])
+    df = pd.DataFrame.from_dict(data["elementList"])
+    df["filters"] = str(data["summary"])
 
-    return data
+    total = data["total"]
+    totalPages = data["totalPages"]
+    actualPage = data["actualPage"]
+
+    print(
+        total,
+        "listings on idealista match the query parameters (page",
+        actualPage,
+        "out of",
+        totalPages,
+        ")",
+    )
+
+    return df, totalPages, actualPage
 
 
 def url_encode_request_data(
     locale: str = "es",
     operation: str = "rent",
     propertyType: str = "homes",
-    locationId: str = "0-EU-ES-28",
+    # locationId: str = "0-EU-ES-28",
+    center: str = "40.416944,-3.703333",
+    distance: str = "5000",
     hasMultimedia: str = "True",
     preservation: str = "good",
     maxItems: str = "50",
@@ -55,7 +74,9 @@ def url_encode_request_data(
         "locale": locale,
         "operation": operation,
         "propertyType": propertyType,
-        "locationId": locationId,
+        # "locationId": locationId,
+        "center": center,
+        "distance": distance,
         "hasMultimedia": hasMultimedia,
         "preservation": preservation,
         "maxItems": maxItems,

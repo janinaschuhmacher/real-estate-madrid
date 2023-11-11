@@ -11,9 +11,9 @@ from pandas.testing import assert_frame_equal
 class TestUrlEcodeRequestData(unittest.TestCase):
     def test_url_encode_request_data(self):
         data = (
-            "locale=es&operation=rent&propertyType=homes&locationId=0-EU-ES-28&hasMultimedia=True&"
-            + "preservation=good&maxItems=50&minPrice=200&minSize=40&sinceDate=W&order=ratioeurm2&sort"
-            + "=asc&furnished=furnishedKitchen"
+            "locale=es&operation=rent&propertyType=homes&center=40.416944%2C-3.703333&distance=5000&"
+            + "hasMultimedia=True&preservation=good&maxItems=50&minPrice=200&minSize=40&"
+            + "sinceDate=W&order=ratioeurm2&sort=asc&furnished=furnishedKitchen"
         )
         test_data = url_encode_request_data(furnished="furnishedKitchen")
         self.assertEqual(test_data, data)
