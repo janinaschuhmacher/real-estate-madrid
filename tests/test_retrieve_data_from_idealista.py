@@ -40,9 +40,11 @@ class TestRetrieveDataFromIdealista(unittest.TestCase):
         self.mock_post.post().status_code = 200
         self.mock_post.post().text = str(self.idealista_data_raw)
 
-        test_response = retrieve_data_from_idealista(
+        test_response, totalPages, actualPage = retrieve_data_from_idealista(
             request_data="locale=es&operation=rent&propertyType=homes&locationId=0-EU-ES-28",
             access_token="bbbbb",
         )
 
+        assert totalPages == 1
+        assert actualPage == 1
         assert_frame_equal(test_response, self.idealista_data)

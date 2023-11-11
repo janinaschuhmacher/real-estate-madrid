@@ -17,7 +17,6 @@ Filters that I always apply are:
 * distance=5000 (for a radius of 5 km aroud the center)
 * hasMultimedia=True (meaning property has pictures, a video or a virtual tour)
 * preservation=good
-
 * maxItems (items per page, max. 50)
 * numPage (page number, we iterate through the pages)
 * maxPrice / minPrice (maximum and minimum rent)

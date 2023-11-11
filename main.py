@@ -44,4 +44,4 @@ for furnished in ["furnishedKitchen", "furnished"]:
 # write data to csv for analysis
 backup_idealista_data(file_name="idealista_data.csv")
 append_idealista_data(file_name="idealista_data.csv", df_new_data=df_all)
-remove_duplicates_from_csv("idealista_data.csv")
+remove_duplicates_from_csv(file_name="idealista_data.csv")
