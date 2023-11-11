@@ -13,7 +13,8 @@ Filters that I always apply are:
 * country=es
 * operation=rent
 * propertyType=homes
-* locationId=0-EU-ES-28 (for Spain)
+* center=40.416944,-3.703333 (for Madrid city center)
+* distance=5000 (for a radius of 5 km aroud the center)
 * hasMultimedia=True (meaning property has pictures, a video or a virtual tour)
 * preservation=good
 
@@ -29,4 +30,8 @@ Filters that I always apply are:
 
 Other relevant filters include:
 * furnished (furnished or furnishedKitchen if there is only a kitchen)
+
+Filters that are currently not used are:
+* locationId=0-EU-ES-28 (for Madrid, Spain)
 * airConditioning (boolean)
+
