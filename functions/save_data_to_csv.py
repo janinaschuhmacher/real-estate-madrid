@@ -2,6 +2,8 @@ import shutil
 from utils.global_variables import DATA_DIRECTORY
 import pandas as pd
 from os.path import exists
+import errno
+import os
 
 
 def backup_idealista_data(
@@ -17,11 +19,17 @@ def backup_idealista_data(
     """
     file_src = data_dir + file_name
     file_dest = data_dir + "idealista_data_backups/" + file_name
-    if exists(file_src):
-        shutil.copyfile(file_src, file_dest)
-        print("Backup for file ", file_name, "created as", file_dest)
-    else:
+    try:
+        shutil.copy(file_src, file_dest)
+    except IOError as e:
+        # ENOENT(2): file does not exist, raised also on missing dest parent dir
         print("No existing file ", file_name, "found.")
+        if e.errno != errno.ENOENT:
+            raise
+        # try creating parent directories
+        os.makedirs(os.path.dirname(file_dest))
+        shutil.copy(file_src, file_dest)
+        print("Backup for file ", file_name, "created as", file_dest)
 
 
 def append_idealista_data(
