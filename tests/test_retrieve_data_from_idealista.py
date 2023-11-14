@@ -10,6 +10,7 @@ from pandas.testing import assert_frame_equal
 
 class TestUrlEcodeRequestData(unittest.TestCase):
     def test_url_encode_request_data(self):
+        """TestUrlEcodeRequestData 1: Test function url_encode_request_data"""
         data = (
             "locale=es&operation=rent&propertyType=homes&center=40.416944%2C-3.703333&distance=5000&"
             + "hasMultimedia=True&preservation=good&maxItems=50&minPrice=200&minSize=40&"
@@ -37,6 +38,7 @@ class TestRetrieveDataFromIdealista(unittest.TestCase):
         cls.mock_post_patcher.stop()
 
     def test_retrieve_data_from_idealista(self):
+        """TestRetrieveDataFromIdealista 1: Test function retrieve_data_from_idealista"""
         self.mock_post.post().status_code = 200
         self.mock_post.post().text = str(self.idealista_data_raw)
 

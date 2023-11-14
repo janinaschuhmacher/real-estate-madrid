@@ -14,6 +14,7 @@ class TestEncodeApiCredentials(unittest.TestCase):
         cls.secret = "123"
 
     def test_encode_api_credentials(self):
+        """TestEncodeApiCredentials 1: Test function encode_api_credentials"""
         test_base64_authorization_string = encode_api_credentials(
             api_key=self.api_key, secret=self.secret
         )
@@ -39,6 +40,7 @@ class TestGetBearerAccessToken(unittest.TestCase):
         cls.mock_encode_api_credentials_patcher.stop()
 
     def test_get_bearer_access_token(self):
+        """TestGetBearerAccessToken 1: Test function get_bearer_access_token"""
         self.mock_post.post().status_code = 200
         self.mock_post.post().text = "{'access_token': 'bbbbb', 'expires_in': 3600}"
 

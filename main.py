@@ -38,9 +38,6 @@ for furnished in ["furnishedKitchen", "furnished"]:
         actualPage += 1
         df_all = pd.concat([df_all, df], ignore_index=True)
 
-        # write unit tests
-        # write documentation
-
 # write data to csv for analysis
 backup_idealista_data(file_name="idealista_data.csv")
 append_idealista_data(file_name="idealista_data.csv", df_new_data=df_all)
