@@ -2,13 +2,14 @@ import pandas as pd
 import os
 from pandas.testing import assert_frame_equal
 import unittest
+from datetime import datetime
 
-from functions.save_data_to_csv import (
+from real_estate_madrid.functions.save_data_to_csv import (
     backup_idealista_data,
     append_idealista_data,
     remove_duplicates_from_csv,
 )
-from utils.global_variables import TEST_DATA_DIRECTORY
+from real_estate_madrid.utils.global_variables import TEST_DATA_DIRECTORY
 
 
 class TestSaveDataToCsv(unittest.TestCase):
@@ -21,7 +22,10 @@ class TestSaveDataToCsv(unittest.TestCase):
         )
         cls.file_path_idealista_data_backup = os.path.join(
             cls.data_directory + "idealista_data_backups/",
-            cls.file_name_idealista_data,
+            cls.file_name_idealista_data.strip(".csv")
+            + "_backup_"
+            + datetime.today().strftime("%Y-%m-%d")
+            + ".csv",
         )
 
         df = pd.DataFrame(

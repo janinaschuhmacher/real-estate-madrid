@@ -1,4 +1,4 @@
-from functions.retrieve_data_from_idealista import (
+from real_estate_madrid.functions.retrieve_data_from_idealista import (
     retrieve_data_from_idealista,
     url_encode_request_data,
 )
@@ -6,6 +6,9 @@ import unittest
 from unittest.mock import patch
 import pandas as pd
 from pandas.testing import assert_frame_equal
+import os
+
+from real_estate_madrid.utils.global_variables import TEST_DATA_DIRECTORY
 
 
 class TestUrlEcodeRequestData(unittest.TestCase):
@@ -23,15 +26,23 @@ class TestUrlEcodeRequestData(unittest.TestCase):
 class TestRetrieveDataFromIdealista(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.mock_post_patcher = patch("functions.retrieve_data_from_idealista.requests")
-        cls.mock_post = cls.mock_post_patcher.start()
-
-        with open("tests/test_data/idealista_data_short.txt", "r") as file:
+        cls.data_directory = TEST_DATA_DIRECTORY
+        cls.file_name_idealista_data_raw = "idealista_data_short.txt"
+        cls.file_name_idealista_data_transformed = "df_idealista_data_short.pkl"
+        cls.file_path_idealista_data_raw = os.path.join(
+            cls.data_directory, cls.file_name_idealista_data_raw
+        )
+        cls.file_path_idealista_data_transformed = os.path.join(
+            cls.data_directory, cls.file_name_idealista_data_transformed
+        )
+        with open(cls.file_path_idealista_data_raw, "r") as file:
             cls.idealista_data_raw = file.read()
 
-        cls.idealista_data = pd.read_pickle(
-            "tests/test_data/df_idealista_data_short.pkl"
+        cls.idealista_data = pd.read_pickle(cls.file_path_idealista_data_transformed)
+        cls.mock_post_patcher = patch(
+            "real_estate_madrid.functions.retrieve_data_from_idealista.requests"
         )
+        cls.mock_post = cls.mock_post_patcher.start()
 
     @classmethod
     def tearDownClass(cls):

@@ -1,13 +1,15 @@
 import shutil
-from utils.global_variables import DATA_DIRECTORY
+from real_estate_madrid.utils.global_variables import DATA_DIRECTORY
 import pandas as pd
 from os.path import exists
 import errno
 import os
+from datetime import datetime
 
 
 def backup_idealista_data(
     file_name: str,
+    backup_file_name: str = None,
     data_dir: str = DATA_DIRECTORY,
 ) -> None:
     """
@@ -15,15 +17,25 @@ def backup_idealista_data(
     to a csv file.
 
     :param file_name: File that will be backed up.
+    :param backup_file_name: Name of the backup file. Defaults to filename_ackup_todays_data.csv.
     :param data_dir: Directory to the original file.
     """
     file_src = data_dir + file_name
-    file_dest = data_dir + "idealista_data_backups/" + file_name
+    if backup_file_name is None:
+        backup_file_name = (
+            file_name.strip(".csv")
+            + "_backup_"
+            + datetime.today().strftime("%Y-%m-%d")
+            + ".csv"
+        )
+    file_dest = data_dir + "idealista_data_backups/" + backup_file_name
     try:
         shutil.copy(file_src, file_dest)
     except IOError as e:
         # ENOENT(2): file does not exist, raised also on missing dest parent dir
-        print("No existing file ", file_name, "found.")
+        print(
+            "No existing backup folder idealista_data_backups/ found. Folder will be created."
+        )
         if e.errno != errno.ENOENT:
             raise
         # try creating parent directories
@@ -64,6 +76,7 @@ def remove_duplicates_from_csv(
     :param data_dir: File location.
     """
     file_history = data_dir + file_name
+    print(file_history)
     df = pd.read_csv(file_history)
     len_original = len(df)
     df.drop_duplicates(

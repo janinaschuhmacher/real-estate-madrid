@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+from datetime import datetime
 from functions.get_bearer_access_token import (
     get_bearer_access_token,
     encode_api_credentials,
@@ -17,7 +18,7 @@ from functions.save_data_to_csv import (
 
 # API key and secret are saved as environment variables
 secret = os.getenv("IDEALISTA_SECRET")
-api_key = os.getenv("IDEALIST_API_KEY")
+api_key = os.getenv("IDEALISTA_API_KEY")
 
 # get bearer access token
 base64_authorization_string = encode_api_credentials(api_key=api_key, secret=secret)
@@ -31,9 +32,11 @@ for furnished in ["furnishedKitchen", "furnished"]:
 
     while actualPage <= totalPages:
         request_data = url_encode_request_data(furnished=furnished, numPage=actualPage)
-        df, totalPages, actualPage, _ = retrieve_data_from_idealista(
+        df, totalPages, actualPage = retrieve_data_from_idealista(
             request_data=request_data, access_token=BAT
         )
+        df["furnished"] = furnished
+        df["insert_date"] = datetime.today().strftime("%Y-%m-%d")
 
         actualPage += 1
         df_all = pd.concat([df_all, df], ignore_index=True)
