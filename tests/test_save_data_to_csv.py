@@ -4,12 +4,13 @@ from pandas.testing import assert_frame_equal
 import unittest
 from datetime import datetime
 
-from real_estate_madrid.functions.save_data_to_csv import (
+from functions.save_data_to_csv import (
+    initialize_csv,
     backup_idealista_data,
     append_idealista_data,
     remove_duplicates_from_csv,
 )
-from real_estate_madrid.utils.global_variables import TEST_DATA_DIRECTORY
+from utils.global_variables import TEST_DATA_DIRECTORY
 
 
 class TestSaveDataToCsv(unittest.TestCase):
@@ -28,7 +29,7 @@ class TestSaveDataToCsv(unittest.TestCase):
             + ".csv",
         )
 
-        df = pd.DataFrame(
+        cls.df_existing_data = pd.DataFrame(
             columns=[
                 "propertyCode",
                 "thumbnail",
@@ -201,7 +202,7 @@ class TestSaveDataToCsv(unittest.TestCase):
             ],
         )
 
-        df.to_csv(cls.file_path_idealista_data, index=False)
+        cls.df_existing_data.to_csv(cls.file_path_idealista_data, index=False)
 
         cls.df_to_append = pd.DataFrame(
             columns=[
@@ -296,9 +297,26 @@ class TestSaveDataToCsv(unittest.TestCase):
     def tearDownClass(cls):
         os.remove(cls.file_path_idealista_data)
         os.remove(cls.file_path_idealista_data_backup)
+        os.remove(
+            os.path.join(
+                TEST_DATA_DIRECTORY,
+                cls.file_name_idealista_data.strip(".csv")
+                + "_"
+                + datetime.today().strftime("%Y-%m-%d")
+                + ".csv",
+            )
+        )
+
+    def test_initialize_csv(self):
+        """TestSaveDataToCsv 1: Test function initialize_csv"""
+        df_test_existing_data = initialize_csv(
+            data_dir=self.data_directory, file_name=self.file_name_idealista_data
+        )
+
+        assert_frame_equal(self.df_existing_data, df_test_existing_data)
 
     def test_backup_idealista_data(self):
-        """TestSaveDataToCsv 1: Test function backup_idealista_data"""
+        """TestSaveDataToCsv 2: Test function backup_idealista_data"""
         backup_idealista_data(
             file_name=self.file_name_idealista_data,
             data_dir=TEST_DATA_DIRECTORY,
@@ -309,11 +327,12 @@ class TestSaveDataToCsv(unittest.TestCase):
         assert_frame_equal(original, backup)
 
     def test_append_idealista_data(self):
-        """TestSaveDataToCsv 2: Test function  append_idealista_data"""
+        """TestSaveDataToCsv 3 a: Test function  append_idealista_data (success scenario)"""
         append_idealista_data(
             file_name=self.file_name_idealista_data,
             df_new_data=self.df_to_append,
             data_dir=TEST_DATA_DIRECTORY,
+            df_existing_data=self.df_existing_data,
         )
         df_appended = pd.read_csv(
             self.file_path_idealista_data,
@@ -535,6 +554,50 @@ class TestSaveDataToCsv(unittest.TestCase):
         )
         assert_frame_equal(df_appended, df_test)
 
+        # reset
+        self.df_existing_data.to_csv(self.file_path_idealista_data, index=False)
+
+    def test_append_idealista_data_new_colummns(self):
+        """TestSaveDataToCsv 3 b: Test function  append_idealista_data
+        (data could not be appended because columns do not match - too many columns in new df)
+        """
+
+        df_new_data = self.df_to_append.copy(deep=True)
+        df_new_data["new_column_1"], df_new_data["new_column_2"] = "", ""
+
+        append_idealista_data(
+            file_name=self.file_name_idealista_data,
+            df_new_data=df_new_data,
+            data_dir=TEST_DATA_DIRECTORY,
+            df_existing_data=self.df_existing_data,
+        )
+        df_appended = pd.read_csv(
+            self.file_path_idealista_data,
+            dtype={"propertyCode": object, "externalReference": object},
+        ).fillna("")
+
+        assert_frame_equal(df_appended, self.df_existing_data)
+
+    def test_append_idealista_data_missing_colummns(self):
+        """TestSaveDataToCsv 3 c: Test function  append_idealista_data
+        (data could not be appended because columns do not match - missing columns in new df)
+        """
+        df_existing_data = self.df_existing_data.copy(deep=True)
+        df_existing_data["new_column_1"], df_existing_data["new_column_2"] = "", ""
+
+        append_idealista_data(
+            file_name=self.file_name_idealista_data,
+            df_new_data=self.df_to_append,
+            data_dir=TEST_DATA_DIRECTORY,
+            df_existing_data=df_existing_data,
+        )
+        df_appended = pd.read_csv(
+            self.file_path_idealista_data,
+            dtype={"propertyCode": object, "externalReference": object},
+        ).fillna("")
+
+        assert_frame_equal(df_appended, self.df_existing_data)
+
     def test_remove_duplicates(self):
         """TestSaveDataToCsv 3: Test function  remove_duplicates"""
         # append the same line twice
@@ -542,11 +605,13 @@ class TestSaveDataToCsv(unittest.TestCase):
             file_name=self.file_name_idealista_data,
             df_new_data=self.df_to_append,
             data_dir=TEST_DATA_DIRECTORY,
+            df_existing_data=self.df_existing_data,
         )
         append_idealista_data(
             file_name=self.file_name_idealista_data,
             df_new_data=self.df_to_append,
             data_dir=TEST_DATA_DIRECTORY,
+            df_existing_data=self.df_existing_data,
         )
         # remove duplicate lines
         remove_duplicates_from_csv(
@@ -603,48 +668,6 @@ class TestSaveDataToCsv(unittest.TestCase):
             ],
             data=[
                 [
-                    "123456678",
-                    "https://img3.idealista.com/blur/WEB_LISTING/0/",
-                    "",
-                    9,
-                    1,
-                    1500.0,
-                    "flat",
-                    "rent",
-                    70.0,
-                    True,
-                    1,
-                    1,
-                    "Calle Argumosa",
-                    "Madrid",
-                    "Madrid",
-                    "Centro",
-                    "es",
-                    "Lavapiés-Embajadores",
-                    40.410107,
-                    -3.696234,
-                    False,
-                    "https://www.idealista.com/inmueble/123456678/",
-                    969,
-                    "¡PRECIOSO apartamento EN PLENO CORAZÓN DE MADR...",
-                    False,
-                    "good",
-                    False,
-                    True,
-                    "",
-                    21.0,
-                    "{'typology': 'flat'}",
-                    "{'subtitle': 'Lavapiés-Embajadores, Madrid'}",
-                    False,
-                    False,
-                    False,
-                    False,
-                    False,
-                    False,
-                    "",
-                    "",
-                ],
-                [
                     "123456644",
                     "https://img3.idealista.com/blur/WEB_LISTING/0/",
                     "",
@@ -669,6 +692,48 @@ class TestSaveDataToCsv(unittest.TestCase):
                     "https://www.idealista.com/inmueble/123456678/",
                     969,
                     "¡PMuy buena oportunidad...",
+                    False,
+                    "good",
+                    False,
+                    True,
+                    "",
+                    21.0,
+                    "{'typology': 'flat'}",
+                    "{'subtitle': 'Lavapiés-Embajadores, Madrid'}",
+                    False,
+                    False,
+                    False,
+                    False,
+                    False,
+                    False,
+                    "",
+                    "",
+                ],
+                [
+                    "123456678",
+                    "https://img3.idealista.com/blur/WEB_LISTING/0/",
+                    "",
+                    9,
+                    1,
+                    1500.0,
+                    "flat",
+                    "rent",
+                    70.0,
+                    True,
+                    1,
+                    1,
+                    "Calle Argumosa",
+                    "Madrid",
+                    "Madrid",
+                    "Centro",
+                    "es",
+                    "Lavapiés-Embajadores",
+                    40.410107,
+                    -3.696234,
+                    False,
+                    "https://www.idealista.com/inmueble/123456678/",
+                    969,
+                    "¡PRECIOSO apartamento EN PLENO CORAZÓN DE MADR...",
                     False,
                     "good",
                     False,
@@ -730,5 +795,7 @@ class TestSaveDataToCsv(unittest.TestCase):
                 ],
             ],
         )
-
         assert_frame_equal(df_dedup, df_test)
+
+        # reset
+        self.df_existing_data.to_csv(self.file_path_idealista_data, index=False)

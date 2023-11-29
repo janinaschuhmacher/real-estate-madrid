@@ -3,5 +3,6 @@
 data/ 
 __pycache__ 
 *.ipynb 
+!analysis/Exploratory_analysis.ipynb
 .vscode/ 
 *.json

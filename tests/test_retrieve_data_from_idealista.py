@@ -1,4 +1,4 @@
-from real_estate_madrid.functions.retrieve_data_from_idealista import (
+from functions.retrieve_data_from_idealista import (
     retrieve_data_from_idealista,
     url_encode_request_data,
 )
@@ -8,7 +8,7 @@ import pandas as pd
 from pandas.testing import assert_frame_equal
 import os
 
-from real_estate_madrid.utils.global_variables import TEST_DATA_DIRECTORY
+from utils.global_variables import TEST_DATA_DIRECTORY
 
 
 class TestUrlEcodeRequestData(unittest.TestCase):
@@ -39,9 +39,7 @@ class TestRetrieveDataFromIdealista(unittest.TestCase):
             cls.idealista_data_raw = file.read()
 
         cls.idealista_data = pd.read_pickle(cls.file_path_idealista_data_transformed)
-        cls.mock_post_patcher = patch(
-            "real_estate_madrid.functions.retrieve_data_from_idealista.requests"
-        )
+        cls.mock_post_patcher = patch("functions.retrieve_data_from_idealista.requests")
         cls.mock_post = cls.mock_post_patcher.start()
 
     @classmethod

@@ -68,7 +68,7 @@ def url_encode_request_data(
     hasMultimedia: str = "True",
     preservation: str = "good",
     maxItems: str = "50",
-    maxPrice: str = "2000",
+    maxPrice: str = None,
     minPrice: str = "200",
     minSize: str = "40",
     sinceDate: str = "W",

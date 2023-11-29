@@ -1,2 +1,2 @@
-DATA_DIRECTORY = "real_estate_madrid/data/"
-TEST_DATA_DIRECTORY = "real_estate_madrid/tests/test_data/"
+DATA_DIRECTORY = "data/"
+TEST_DATA_DIRECTORY = "tests/test_data/"

@@ -1,4 +1,4 @@
-from real_estate_madrid.functions.get_bearer_access_token import (
+from functions.get_bearer_access_token import (
     get_bearer_access_token,
     encode_api_credentials,
 )
@@ -24,13 +24,11 @@ class TestEncodeApiCredentials(unittest.TestCase):
 class TestGetBearerAccessToken(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.mock_post_patcher = patch(
-            "real_estate_madrid.functions.get_bearer_access_token.requests"
-        )
+        cls.mock_post_patcher = patch("functions.get_bearer_access_token.requests")
         cls.mock_post = cls.mock_post_patcher.start()
 
         cls.mock_encode_api_credentials_patcher = patch(
-            "real_estate_madrid.functions.get_bearer_access_token.encode_api_credentials"
+            "functions.get_bearer_access_token.encode_api_credentials"
         )
         cls.mock_encode_api_credentials = (
             cls.mock_encode_api_credentials_patcher.start()
