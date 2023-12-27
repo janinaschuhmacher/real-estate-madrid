@@ -18,22 +18,23 @@ jobs:
         MINICONDA_URL="https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
         curl -o miniconda.sh $MINICONDA_URL
         bash miniconda.sh -b -p $HOME/miniconda
-        source "$HOME/miniconda/etc/profile.d/conda.sh"
+        echo ". $HOME/miniconda/etc/profile.d/conda.sh" >> $HOME/.bashrc
         conda init bash
       shell: bash
 
-    - name: Create Conda environment
-      run: conda create -n myenv python=3.11.5
-      shell: bash
-
-    - name: Activate Conda environment
-      run: source $HOME/miniconda/etc/profile.d/conda.sh && conda activate myenv
+    - name: Create and activate Conda environment
+      run: |
+        conda create -n myenv python=3.11.5
+        source $HOME/.bashrc
+        conda activate myenv
+        conda info --envs  # Print environments for debugging
       shell: bash
 
     - name: Install dependencies
       run: |
         pip install -r requirements.txt
       shell: bash
+
     - name: Run pylint
       run: |
         pylint $(git ls-files '*.py') --disable=C --max-line-length=120 --disable=R0913,R0914
