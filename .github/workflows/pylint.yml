@@ -24,6 +24,7 @@ jobs:
     - name: Create and activate Conda environment
       run: |
         conda create -n myenv python=3.11.5
+        conda init
         conda activate myenv
         pip install -r requirements.txt
     - name: Run pylint
