@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
@@ -16,10 +19,12 @@ jobs:
         curl -o miniconda.sh $MINICONDA_URL
         bash miniconda.sh -b -p $HOME/miniconda
         export PATH="$HOME/miniconda/bin:$PATH"
+        echo ". $HOME/miniconda/etc/profile.d/conda.sh" >> $HOME/.bashrc
+        echo "conda activate" >> $HOME/.bashrc
     - name: Create and activate Conda environment
       run: |
         conda create -n myenv python=3.11.5
-        source activate myenv
+        conda activate myenv
         pip install -r requirements.txt
     - name: Run pylint
       run: |
