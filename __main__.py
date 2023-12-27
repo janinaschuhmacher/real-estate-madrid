@@ -1,6 +1,15 @@
+"""Program that extracts data on rental apartments in Madrid from the idealista API"""
 import os
-import pandas as pd
+import sys
 from datetime import datetime
+import pandas as pd
+
+# get absolute path to project's root directory
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
+# add the project's root directory to the Python path
+sys.path.insert(0, project_root)
+
 from functions.get_bearer_access_token import (
     get_bearer_access_token,
     encode_api_credentials,

@@ -26,7 +26,7 @@ def get_bearer_access_token(
     data = "grant_type=client_credentials"
 
     # retrieve bearer access token
-    response = requests.post(url, headers=headers, data=data)
+    response = requests.post(url, headers=headers, data=data, timeout=5)
     assert (
         response.status_code == 200
     ), """get_bearer_access_token: API Call failed with status code {status_code}

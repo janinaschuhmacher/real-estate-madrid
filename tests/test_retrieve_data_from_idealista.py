@@ -8,7 +8,7 @@ import pandas as pd
 from pandas.testing import assert_frame_equal
 import os
 
-from utils.global_variables import TEST_DATA_DIRECTORY
+from global_variables import TEST_DATA_DIRECTORY
 
 
 class TestUrlEcodeRequestData(unittest.TestCase):
@@ -35,7 +35,7 @@ class TestRetrieveDataFromIdealista(unittest.TestCase):
         cls.file_path_idealista_data_transformed = os.path.join(
             cls.data_directory, cls.file_name_idealista_data_transformed
         )
-        with open(cls.file_path_idealista_data_raw, "r") as file:
+        with open(cls.file_path_idealista_data_raw, "r", encoding='UTF-8') as file:
             cls.idealista_data_raw = file.read()
 
         cls.idealista_data = pd.read_pickle(cls.file_path_idealista_data_transformed)

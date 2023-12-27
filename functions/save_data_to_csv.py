@@ -1,5 +1,9 @@
+import sys
+sys.path.append("/Desktop/repos/real_estate_madrid")
+
+from global_variables import DATA_DIRECTORY
+
 import shutil
-from utils.global_variables import DATA_DIRECTORY
 import pandas as pd
 import errno
 import os
@@ -48,6 +52,8 @@ def backup_idealista_data(
         backup_file_name (str, optional): Name of the backup file. Defaults to filename_backup_todays_date.csv.
         data_dir (str, optional): Directory to the original file.. Defaults to DATA_DIRECTORY.
     """
+    # set working directory
+    os.chdir("real_estate_madrid")
     file_src = os.path.join(data_dir, file_name)
     if backup_file_name is None:
         backup_file_name = (
@@ -67,9 +73,10 @@ def backup_idealista_data(
         if e.errno != errno.ENOENT:
             raise
         # try creating parent directories
-        os.makedirs(os.path.dirname(file_dest))
-        shutil.copy(file_src, file_dest)
-        print("Backup for file ", file_name, "created as", file_dest)
+        # try:
+        #     os.makedirs(os.path.dirname(file_dest))
+        #     shutil.copy(file_src, file_dest)
+        #     print("Backup for file ", file_name, "created as", file_dest)
 
 
 def append_idealista_data(

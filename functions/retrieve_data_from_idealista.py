@@ -27,7 +27,7 @@ def retrieve_data_from_idealista(
     headers["Authorization"] = "Bearer " + access_token
     url_properties = "https://api.idealista.com/3.5/es/search?"
 
-    response = requests.post(url_properties + request_data, headers=headers)
+    response = requests.post(url_properties + request_data, headers=headers, timeout=5)
 
     assert (
         response.status_code == 200
@@ -68,7 +68,6 @@ def url_encode_request_data(
     hasMultimedia: str = "True",
     preservation: str = "good",
     maxItems: str = "50",
-    maxPrice: str = None,
     minPrice: str = "200",
     minSize: str = "40",
     sinceDate: str = "W",
@@ -92,7 +91,6 @@ def url_encode_request_data(
     :param hasMultimedia: "True" (meaning property has pictures, a video or a virtual tour).
     :param preservation: "good" to exclude flats that need renovation.
     :param maxItems: items per page, max. 50.
-    :param maxPrice: maximum rent.
     :params minPrice: minimum rent.
     :param minSize: minimum size of the flat.
     :param sinceDate: W:last week, M: last month, T:last day (for rent except rooms), Y: last 2 days (sale and rooms).

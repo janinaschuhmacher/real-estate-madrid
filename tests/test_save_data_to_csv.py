@@ -10,7 +10,7 @@ from functions.save_data_to_csv import (
     append_idealista_data,
     remove_duplicates_from_csv,
 )
-from utils.global_variables import TEST_DATA_DIRECTORY
+from global_variables import TEST_DATA_DIRECTORY
 
 
 class TestSaveDataToCsv(unittest.TestCase):

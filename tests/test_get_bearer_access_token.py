@@ -24,6 +24,8 @@ class TestEncodeApiCredentials(unittest.TestCase):
 class TestGetBearerAccessToken(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        # @patch.object(get_bearer_access_token, 'requests', Mock(status_code=200, text="{'access_token': 'bbbbb', 'expires_in': 3600}"))
+        # @patch.object(get_bearer_access_token, 'encode_api_credentials')
         cls.mock_post_patcher = patch("functions.get_bearer_access_token.requests")
         cls.mock_post = cls.mock_post_patcher.start()
 
