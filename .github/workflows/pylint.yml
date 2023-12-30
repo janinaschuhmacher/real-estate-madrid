@@ -11,14 +11,16 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: 3.11.5
+    - name: Set pythonpath
+      run: |
+        echo "PYTHONPATH=$ {{ github.workspace }}" >> $GITHUB_ENV
+    - name: Print pythonpath
+      run: |
+        echo "PYTHONPATH IS $PYTHONPATH"
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    - name: Set pythonpath
-      run: |
-        echo "PYTHONPATH=$ {{ github.workspace }}" >> $GITHUB_ENV
-        echo "PYTHONPATH IS $PYTHONPATH"
     - name: Analysing the code with pylint
       run: |
         pylint $(git ls-files '*.py') --disable=C --max-line-length=120 --disable=R0913,R0914
