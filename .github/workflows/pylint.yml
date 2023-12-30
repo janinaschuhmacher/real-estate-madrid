@@ -17,7 +17,8 @@ jobs:
         pip install -r requirements.txt
     - name: Set pythonpath
       run: |
-        echo "PYTHONPATH=home/runner/work/real-estate-madrid" >> $GITHUB_ENV
+        echo "::add-path::$ {{ github.workspace }}"
+        shell: bash
     - name: Analysing the code with pylint
       run: |
         pylint $(git ls-files '*.py') --disable=C --max-line-length=120 --disable=R0913,R0914
