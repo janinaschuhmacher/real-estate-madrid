@@ -18,6 +18,7 @@ jobs:
     - name: Set pythonpath
       run: |
         echo "PYTHONPATH=$ {{ github.workspace }}" >> $GITHUB_ENV
+        echo "PYTHONPATH IS $PYTHONPATH"
       shell: bash
     - name: Analysing the code with pylint
       run: |
