@@ -19,7 +19,6 @@ jobs:
       run: |
         echo "PYTHONPATH=$ {{ github.workspace }}" >> $GITHUB_ENV
         echo "PYTHONPATH IS $PYTHONPATH"
-      shell: bash
     - name: Analysing the code with pylint
       run: |
         pylint $(git ls-files '*.py') --disable=C --max-line-length=120 --disable=R0913,R0914
