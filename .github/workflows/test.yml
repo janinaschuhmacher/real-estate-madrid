@@ -20,10 +20,19 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Set pythonpath
+      run: |
+        echo "PYTHONPATH=${{ github.workspace }}" >> $GITHUB_ENV
+        echo ${{ github.workspace }}
+  
+    - name: Print pythonpath
+      run: |
+        echo "PYTHONPATH IS $PYTHONPATH"
+  
     - name: Run unittests
       run: |
         cd ..
-        python -m unittest discover -v real-estate-madrid.tests
+        python -m unittest discover -v real-estate-madrid
 
     - name: Check test results and prevent push on failure
       if: ${{ failure() }}
