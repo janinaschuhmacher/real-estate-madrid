@@ -23,7 +23,7 @@ jobs:
     - name: Run unittests
       run: |
         cd ..
-        python -m unittest discover -v real_estate_madrid
+        python -m unittest discover -v real-estate-madrid.tests
 
     - name: Check test results and prevent push on failure
       if: ${{ failure() }}
