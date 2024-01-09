@@ -21,7 +21,9 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run unittests
-      run: python -m unittest discover
+      run: |
+        cd ..
+        python -m unittest discover -v real_estate_madrid
 
     - name: Check test results and prevent push on failure
       if: ${{ failure() }}
