@@ -1,11 +1,7 @@
-import sys
-sys.path.append("/Desktop/repos/real_estate_madrid")
-
 from global_variables import DATA_DIRECTORY
 
 import shutil
 import pandas as pd
-import errno
 import os
 from datetime import datetime
 
@@ -50,10 +46,8 @@ def backup_idealista_data(
     Args:
         file_name (str): File that will be backed up.
         backup_file_name (str, optional): Name of the backup file. Defaults to filename_backup_todays_date.csv.
-        data_dir (str, optional): Directory to the original file.. Defaults to DATA_DIRECTORY.
+        data_dir (str, optional): Directory to the original file. Defaults to DATA_DIRECTORY.
     """
-    # set working directory
-    os.chdir("real_estate_madrid")
     file_src = os.path.join(data_dir, file_name)
     if backup_file_name is None:
         backup_file_name = (
@@ -62,21 +56,19 @@ def backup_idealista_data(
             + datetime.today().strftime("%Y-%m-%d")
             + ".csv"
         )
-    file_dest = os.path.join(data_dir, "idealista_data_backups/", backup_file_name)
+    backup_dir = os.path.join(data_dir, "idealista_data_backups/")
+    file_dest = os.path.join(backup_dir, backup_file_name)
     try:
         shutil.copy(file_src, file_dest)
-    except IOError as e:
-        # ENOENT(2): file does not exist, raised also on missing dest parent dir
+    except IOError:
         print(
             "No existing backup folder idealista_data_backups/ found. Folder will be created."
         )
-        if e.errno != errno.ENOENT:
-            raise
-        # try creating parent directories
-        # try:
-        #     os.makedirs(os.path.dirname(file_dest))
-        #     shutil.copy(file_src, file_dest)
-        #     print("Backup for file ", file_name, "created as", file_dest)
+        # create parent directory
+        os.makedirs(os.path.dirname(backup_dir))
+        shutil.copy(file_src, file_dest)
+    print("Backup for file ", file_name, "created as", file_dest)
+        
 
 
 def append_idealista_data(
