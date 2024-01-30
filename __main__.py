@@ -5,7 +5,7 @@ from datetime import datetime
 import pandas as pd
 
 # get absolute path to project's root directory
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 # add the project's root directory to the Python path
 sys.path.insert(0, project_root)
@@ -24,6 +24,8 @@ from functions.save_data_to_csv import (
     append_idealista_data,
     remove_duplicates_from_csv,
 )
+
+from functions.write_data_to_nosql import create_table_NoSQL, write_data_to_NoSQL
 
 # API key and secret are saved as environment variables
 secret = os.getenv("IDEALISTA_SECRET")
@@ -54,3 +56,7 @@ for furnished in ["furnishedKitchen", "furnished"]:
 backup_idealista_data(file_name="idealista_data.csv")
 append_idealista_data(file_name="idealista_data.csv", df_new_data=df_all)
 remove_duplicates_from_csv(file_name="idealista_data.csv")
+
+# write data to NoSQL database
+create_table_NoSQL()
+write_data_to_NoSQL(df_all)
