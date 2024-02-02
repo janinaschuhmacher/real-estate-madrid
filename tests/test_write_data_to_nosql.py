@@ -10,8 +10,13 @@ class TestDynamoDBHelper(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # patch connection to DynamoDB
         cls.patcher = patch("functions.write_data_to_nosql.boto3.client")
         cls.mock_dynamodb_client = cls.patcher.start()
+        cls.mock_dynamodb = MagicMock()
+        cls.mock_dynamodb_client.return_value = cls.mock_dynamodb
+        # set up DynamoDB client
+        cls.dynamodb_helper = DynamoDB_Helper()
 
     @classmethod
     def tearDownClass(cls):
@@ -19,23 +24,17 @@ class TestDynamoDBHelper(unittest.TestCase):
         super().tearDownClass()
 
     def test_table_exists(self):
-        # set up DynamoDB client
-        self.mock_dynamodb = MagicMock()
-        self.mock_dynamodb_client.return_value = self.mock_dynamodb
-        self.dynamodb_helper = DynamoDB_Helper()
-
-        # set up ResourceNotFoundError
+        """Test case in which the table already exists in the database."""
+        # set up ResourceNotFoundException
         model = botocore.session.get_session().get_service_model("dynamodb")
         factory = botocore.errorfactory.ClientExceptionsFactory()
         exceptions = factory.create_client_exceptions(model)
 
-        # set up ResourceNotFoundException
         self.mock_dynamodb.exceptions.ResourceNotFoundException = (
             exceptions.ResourceNotFoundException
         )
 
-        test_table_name = "test_table"
-
+        # mock so that describe_table returns ResourceNotFoundException
         self.mock_dynamodb.describe_table.side_effect = exceptions.ResourceNotFoundException(
             error_response={
                 "Error": {
@@ -46,49 +45,57 @@ class TestDynamoDBHelper(unittest.TestCase):
             operation_name="DescribeTable",
         )
 
+        # run _check_if_table_exists_NoSQL()
+        test_table_name = "test_table"
         result = self.dynamodb_helper._check_if_table_exists_NoSQL(test_table_name)
 
+        # check that function returns False
         self.assertRaises(self.mock_dynamodb.exceptions.ResourceNotFoundException)
         self.assertFalse(result)
 
+    def test_table_does_not_exist(self):
+        """Test case in which the table does not exist in the database."""
 
-#     @patch("functions.write_data_to_nosql.boto3.client")
-#     def test_table_does_not_exist(self, mock_dynamodb_client):
-#         mock_dynamodb = MagicMock()
-#         mock_dynamodb_client.return_value = mock_dynamodb
+        test_table_name = "test_table"
 
-#         # set up DynamoDB client
-#         dynamodb_helper = DynamoDB_Helper()
+        self.mock_dynamodb.describe_table.side_effect = None
 
-#         test_table_name = "test_table"
+        result = self.dynamodb_helper._check_if_table_exists_NoSQL(test_table_name)
 
-#         mock_dynamodb.describe_table.side_effect = None
-
-#         result = dynamodb_helper._check_if_table_exists_NoSQL(test_table_name)
-
-#         self.assertTrue(result)
+        self.assertTrue(result)
 
 
-# class TestCreateTableNoSQL(unittest.TestCase):
-#     @patch("functions.write_data_to_nosql.boto3.client")
-#     def test_table_creation_success(self, mock_dynamodb_client):
-#         mock_dynamodb = MagicMock()
-#         mock_dynamodb_client.return_value = mock_dynamodb
+class TestCreateTableNoSQL(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        # patch connection to DynamoDB
+        cls.patcher = patch("functions.write_data_to_nosql.boto3.client")
+        cls.mock_dynamodb_client = cls.patcher.start()
+        cls.mock_dynamodb = MagicMock()
+        cls.mock_dynamodb_client.return_value = cls.mock_dynamodb
+        # set up DynamoDB client
+        cls.dynamodb_helper = DynamoDB_Helper()
 
-#         # set up DynamoDB client
-#         dynamodb_helper = DynamoDB_Helper()
+    @classmethod
+    def tearDownClass(cls):
+        cls.patcher.stop()
+        super().tearDownClass()
 
-#         # mock _check_if_table_exists_NoSQL function and return False
-#         DynamoDB_Helper._check_if_table_exists_NoSQL = MagicMock(return_value=False)
+    def test_table_creation_success(self):
+        """Test successful table creation"""
+        # mock _check_if_table_exists_NoSQL function and return False
+        with patch.object(
+            DynamoDB_Helper, "_check_if_table_exists_NoSQL", return_value=False
+        ):
+            # Call the function create_table_NoSQL
+            test_table_name = "test_table"
+            result = self.dynamodb_helper.create_table_NoSQL(test_table_name)
 
-#         # Call the function
-#         test_table_name = "test_table"
-#         result = dynamodb_helper.create_table_NoSQL(test_table_name)
-
-#         # Assert that the table creation was successful
-#         DynamoDB_Helper._check_if_table_exists_NoSQL.assert_called_once()
-#         mock_dynamodb.create_table.assert_called_once()
-#         self.assertTrue(result)
+            # Assert that the table creation was successful
+            DynamoDB_Helper._check_if_table_exists_NoSQL.assert_called_once()
+            self.mock_dynamodb.create_table.assert_called_once()
+            self.assertTrue(result)
 
 
 if __name__ == "__main__":
