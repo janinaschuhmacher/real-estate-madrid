@@ -89,7 +89,6 @@ pycparser==2.21
 pyflakes==3.0.1
 Pygments==2.15.1
 pylint==2.16.2
-pyOpenSSL==23.2.0
 pyparsing==3.0.9
 PyQt5==5.15.10
 PyQt5-sip==12.13.0
