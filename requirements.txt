@@ -30,7 +30,7 @@ executing==0.8.3
 fastjsonschema==2.16.2
 flake8==6.0.0
 fonttools==4.25.0
-idna==3.4
+idna==3.7
 ipykernel==6.25.0
 ipython==8.15.0
 ipython-genutils==0.2.0
