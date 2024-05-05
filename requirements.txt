@@ -98,7 +98,7 @@ python-dateutil==2.8.2
 python-json-logger==2.0.7
 pytz==2023.3.post1
 PyYAML==6.0.1
-pyzmq==23.2.0
+pyzmq>=20
 referencing==0.30.2
 requests==2.31.0
 rfc3339-validator==0.1.4
