@@ -24,4 +24,4 @@ jobs:
         ${{ env.pythonLocation }}\python.exe -m pip install -r requirements.txt
     - name: Analysing the code with pylint
       run: |
-        pylint $(git ls-files '*.py') --disable=C --max-line-length=120 --disable=R0913,R0914
+        pylint ${{ github.workspace }}/**/*.py --disable=C --max-line-length=120 --disable=R0913,R0914
