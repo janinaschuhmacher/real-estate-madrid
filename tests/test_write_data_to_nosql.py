@@ -11,22 +11,26 @@ import os
 from global_variables import TEST_DATA_DIRECTORY
 
 
-class TestDynamoDBHelper(unittest.TestCase):
+class TestCreateTableNoSQL(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         # patch connection to DynamoDB
-        cls.patcher = patch("functions.write_data_to_nosql.boto3.client")
-        cls.mock_dynamodb_client = cls.patcher.start()
+        cls.patcher_client = patch("functions.write_data_to_nosql.boto3.client")
+        cls.patcher_resource = patch("functions.write_data_to_nosql.boto3.resource")
+        cls.mock_dynamodb_client = cls.patcher_client.start()
+        cls.mock_dynamodb_resource = cls.patcher_resource.start()
         cls.mock_dynamodb = MagicMock()
         cls.mock_dynamodb_client.return_value = cls.mock_dynamodb
+        cls.mock_dynamodb_resource.return_value = cls.mock_dynamodb
 
         # set up DynamoDB client
         cls.dynamodb_helper = DynamoDB_Helper()
 
     @classmethod
     def tearDownClass(cls):
-        cls.patcher.stop()
+        cls.patcher_client.stop()
+        cls.patcher_resource.stop()
         super().tearDownClass()
 
     @patch("functions.write_data_to_nosql.logging")
@@ -78,24 +82,6 @@ class TestDynamoDBHelper(unittest.TestCase):
         )
         self.assertTrue(result)
 
-
-class TestCreateTableNoSQL(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        # patch connection to DynamoDB
-        cls.patcher = patch("functions.write_data_to_nosql.boto3.client")
-        cls.mock_dynamodb_client = cls.patcher.start()
-        cls.mock_dynamodb = MagicMock()
-        cls.mock_dynamodb_client.return_value = cls.mock_dynamodb
-        # set up DynamoDB client
-        cls.dynamodb_helper = DynamoDB_Helper()
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.patcher.stop()
-        super().tearDownClass()
-
     @patch("functions.write_data_to_nosql.logging")
     def test_table_creation_success(self, mock_logging):
         """Test successful table creation"""
@@ -145,7 +131,6 @@ class TestWriteToDynamoDB(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.dynamodb_helper = DynamoDB_Helper()
 
         # provide sample df
         cls.data_directory = TEST_DATA_DIRECTORY
@@ -162,7 +147,6 @@ class TestWriteToDynamoDB(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        # cls.patcher.stop()
         super().tearDownClass()
 
     @patch.dict(
@@ -194,7 +178,7 @@ class TestWriteToDynamoDB(unittest.TestCase):
         mock_dynamodb.Table.return_value = mock_table
         mock_boto3.resource.return_value = mock_dynamodb
 
-        # # Instantiate YourClass
+        # Instantiate YourClass
         obj = DynamoDB_Helper()
 
         # Call the function
