@@ -30,7 +30,7 @@ executing==0.8.3
 fastjsonschema==2.16.2
 flake8==6.0.0
 fonttools==4.25.0
-idna==3.4
+idna==3.7
 ipykernel==6.25.0
 ipython==8.15.0
 ipython-genutils==0.2.0
@@ -42,7 +42,7 @@ jsonschema==4.19.2
 jsonschema-specifications==2023.7.1
 jupyter_client==7.4.9
 jupyter_core==5.5.0
-jupyter-events==0.6.3
+jupyter-events
 jupyter-server==2.11.2
 jupyter_server_fileid==0.9.0
 jupyter_server_ydoc==0.8.0
@@ -97,14 +97,14 @@ python-dateutil==2.8.2
 python-json-logger==2.0.7
 pytz==2023.3.post1
 PyYAML==6.0.1
-pyzmq==23.2.0
+pyzmq>=20
 referencing==0.30.2
 requests==2.31.0
 rfc3339-validator==0.1.4
 rfc3986-validator==0.1.1
 rpds-py==0.10.6
 seaborn==0.12.2
-Send2Trash==1.8.0
+Send2Trash>=1.8.0
 setuptools==68.0.0
 sip==6.7.12
 six==1.16.0
