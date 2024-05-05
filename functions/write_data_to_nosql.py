@@ -7,7 +7,8 @@ import logging
 
 class DynamoDB_Helper:
     def __init__(self):
-        self.dynamodb = boto3.client("dynamodb")
+        self.dynamodb_client = boto3.client("dynamodb")
+        self.dynamodb_resource = boto3.resource("dynamodb")
 
         # set up logging to be printed to the console
         logging.basicConfig(
@@ -21,7 +22,7 @@ class DynamoDB_Helper:
         # Add the console handler to the logger
         logger.addHandler(console_handler)
 
-    def _check_if_table_exists_NoSQL(
+    def check_if_table_exists_NoSQL(
         self,
         table_name: str,
     ) -> bool:
@@ -34,14 +35,14 @@ class DynamoDB_Helper:
             bool: True if table already exists, False otherwise.
         """
         try:
-            self.dynamodb.describe_table(TableName=table_name)
+            self.dynamodb_client.describe_table(TableName=table_name)
             logging.info("Table %s already exists.", table_name)
             return True
         except ClientError as e:
             if e.response["Error"]["Code"] == "ResourceNotFoundException":
                 logging.info("Table %s does not exist.", table_name)
             else:
-                logging.info("Unexpected error: %s" % e)
+                logging.info("Unexpected error: %s", e)
             return False
 
     def create_table_NoSQL(self, table_name: str = "IdealistaDataMadrid") -> bool:
@@ -54,13 +55,13 @@ class DynamoDB_Helper:
             bool: _description_
         """
         # check if a table with name table_name already exists in the database
-        if self._check_if_table_exists_NoSQL(table_name=table_name):
+        if self.check_if_table_exists_NoSQL(table_name=table_name):
             logging.info("Table %s already exists", table_name)
-            return
+            return None
 
         # Create table
         try:
-            self.dynamodb.create_table(
+            self.dynamodb_client.create_table(
                 TableName=table_name,
                 KeySchema=[
                     {"AttributeName": "insert_date", "KeyType": "HASH"},
@@ -100,15 +101,16 @@ class DynamoDB_Helper:
             )
 
         # convert all columns to type string because dynamoDB cannot handle floats
-        df.reset_index(inplace=True)
-        df = df.astype("str")
+        df_write = df.copy(deep=True)
+        df_write.reset_index(inplace=True)
+        df_write = df_write.astype("str")
 
         # set the sort key
-        df["run"] = df.index
+        df_write["run"] = df_write.index
 
         # write each row as one record to the database
-        records = df.to_dict(orient="records")
-        table = self.dynamodb.Table("IdealistaDataMadrid")
+        records = df_write.to_dict(orient="records")
+        table = self.dynamodb_resource.Table("IdealistaDataMadrid")
         success_count = 0
         error_count = 0
 
@@ -124,4 +126,4 @@ class DynamoDB_Helper:
         print(f"Total records written: {success_count}")
         print(f"Total records failed: {error_count}")
 
-        return df
+        return df_write

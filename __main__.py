@@ -1,4 +1,5 @@
 """Program that extracts data on rental apartments in Madrid from the idealista API"""
+
 import os
 import sys
 from datetime import datetime
@@ -25,7 +26,9 @@ from functions.save_data_to_csv import (
     remove_duplicates_from_csv,
 )
 
-from functions.write_data_to_nosql import create_table_NoSQL, write_data_to_NoSQL
+from functions.write_data_to_nosql import DynamoDB_Helper
+
+dynamodb_helper = DynamoDB_Helper()
 
 # API key and secret are saved as environment variables
 secret = os.getenv("IDEALISTA_SECRET")
@@ -58,5 +61,5 @@ append_idealista_data(file_name="idealista_data.csv", df_new_data=df_all)
 remove_duplicates_from_csv(file_name="idealista_data.csv")
 
 # write data to NoSQL database
-create_table_NoSQL()
-write_data_to_NoSQL(df_all)
+dynamodb_helper.create_table_NoSQL()
+dynamodb_helper.write_data_to_NoSQL(df_all)
