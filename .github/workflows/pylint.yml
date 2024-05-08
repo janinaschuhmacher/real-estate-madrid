@@ -14,8 +14,7 @@ jobs:
     - name: Set pythonpath
       env:
         PYTHONPATH: ${{ github.workspace }}
-    - name: Print pythonpath
-      run: |
+      run:
         echo "PYTHONPATH is set to $PYTHONPATH"
     - name: Install dependencies
       run: |
