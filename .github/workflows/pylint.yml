@@ -12,17 +12,16 @@ jobs:
       with:
         python-version: 3.11.5
     - name: Set pythonpath
-      run: |
-        $env:PYTHONPATH = Get-Location
-        echo "PYTHONPATH set to $env:PYTHONPATH"
+      env:
+        PYTHONPATH: ${{ github.workspace }}
     - name: Print pythonpath
       run: |
-        echo "PYTHONPATH IS $PYTHONPATH"
+        echo "PYTHONPATH is set to $PYTHONPATH"
     - name: Install dependencies
       run: |
         ${{ env.pythonLocation }}\python.exe -m pip install --upgrade pip
         ${{ env.pythonLocation }}\python.exe -m pip install -r requirements.txt
     - name: Analysing the code with pylint
       run: |
-        Get-ChildItem -Path ${{ github.workspace }} -Recurse -Filter "*.py" | ForEach-Object { pylint $_.FullName --disable=C --max-line-length=120 --disable=R0913,R0914 }
+        Get-ChildItem -Path $env:PYTHONPATH -Recurse -Filter "*.py" | ForEach-Object { pylint $_.FullName --disable=C --max-line-length=120 --disable=R0913,R0914 }
 
