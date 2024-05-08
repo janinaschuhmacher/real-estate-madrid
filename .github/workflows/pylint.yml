@@ -15,7 +15,7 @@ jobs:
         
     - name: Set PYTHONPATH
       run: |
-        echo "PYTHONPATH=${{ github.workspace }}" >> $GITHUB_ENV
+        echo "$env:PYTHONPATH = ${{ github.workspace }}" >> $GITHUB_ENV
 
     - name: Print pythonpath
       run: |
