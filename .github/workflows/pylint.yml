@@ -13,8 +13,8 @@ jobs:
         python-version: 3.11.5
     - name: Set pythonpath
       run: |
-        echo "PYTHONPATH=$(pwd)}" >> $GITHUB_ENV
-        echo $(pwd)
+        $env:PYTHONPATH = Get-Location
+        echo "PYTHONPATH set to $env:PYTHONPATH"
     - name: Print pythonpath
       run: |
         echo "PYTHONPATH IS $PYTHONPATH"
