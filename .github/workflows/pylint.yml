@@ -7,18 +7,22 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
+    
     - name: Set up Python 3.11.5
       uses: actions/setup-python@v3
       with:
         python-version: 3.11.5
+        
     - name: Set PYTHONPATH
-      run: echo "PYTHONPATH=${{ github.workspace }}" >> $GITHUB_ENV && echo "PYTHONPATH is set to ${{ github.workspace }}"
+      run: |
+        echo "PYTHONPATH=${{ github.workspace }}" >> $GITHUB_ENV
+        echo "PYTHONPATH is set to ${{ github.workspace }}"
+        
     - name: Install dependencies
       run: |
-        ${{ env.pythonLocation }}\python.exe -m pip install --upgrade pip
-        ${{ env.pythonLocation }}\python.exe -m pip install -r requirements.txt
+        ${{ env.pythonLocation }}/python.exe -m pip install --upgrade pip
+        ${{ env.pythonLocation }}/python.exe -m pip install -r requirements.txt
+        
     - name: Analysing the code with pylint
       run: |
-        echo "PYTHONPATH=${{ github.workspace }}" >> $GITHUB_ENV && echo "PYTHONPATH is set to ${{ github.workspace }}"
         Get-ChildItem -Path $env:PYTHONPATH -Recurse -Filter "*.py" | ForEach-Object { pylint $_.FullName --disable=C --max-line-length=120 --disable=R0913,R0914 }
-
