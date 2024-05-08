@@ -13,8 +13,8 @@ jobs:
         python-version: 3.11.5
     - name: Set pythonpath
       run: |
-        echo "PYTHONPATH=${{ github.workspace }}" >> $GITHUB_ENV
-        echo ${{ github.workspace }}
+        echo "PYTHONPATH=$(pwd)}" >> $GITHUB_ENV
+        echo $(pwd)
     - name: Print pythonpath
       run: |
         echo "PYTHONPATH IS $PYTHONPATH"
