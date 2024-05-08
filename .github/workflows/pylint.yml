@@ -19,5 +19,6 @@ jobs:
         ${{ env.pythonLocation }}\python.exe -m pip install -r requirements.txt
     - name: Analysing the code with pylint
       run: |
+        echo "PYTHONPATH=${{ github.workspace }}" >> $GITHUB_ENV && echo "PYTHONPATH is set to ${{ github.workspace }}"
         Get-ChildItem -Path $env:PYTHONPATH -Recurse -Filter "*.py" | ForEach-Object { pylint $_.FullName --disable=C --max-line-length=120 --disable=R0913,R0914 }
 
