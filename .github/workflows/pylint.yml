@@ -13,14 +13,6 @@ jobs:
       with:
         python-version: 3.11.5
         
-    - name: Set PYTHONPATH
-      run: |
-        echo "$env:PYTHONPATH = ${{ github.workspace }}" >> $GITHUB_ENV
-
-    - name: Print pythonpath
-      run: |
-        echo "PYTHONPATH IS $PYTHONPATH"
-        
     - name: Install dependencies
       run: |
         ${{ env.pythonLocation }}/python.exe -m pip install --upgrade pip
@@ -28,4 +20,6 @@ jobs:
         
     - name: Analysing the code with pylint
       run: |
+        echo "$env:PYTHONPATH = ${{ github.workspace }}" >> $GITHUB_ENV
+        echo "$env:PYTHONPATH IS $PYTHONPATH"
         Get-ChildItem -Path $env:PYTHONPATH -Recurse -Filter "*.py" | ForEach-Object { pylint $_.FullName --disable=C --max-line-length=120 --disable=R0913,R0914 }
