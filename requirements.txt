@@ -105,7 +105,7 @@ pywinpty==2.0.10
 PyYAML==6.0.1
 pyzmq>=20
 referencing==0.30.2
-requests==2.31.0
+requests==2.32.0
 rfc3339-validator==0.1.4
 rfc3986-validator==0.1.1
 rpds-py==0.10.6
