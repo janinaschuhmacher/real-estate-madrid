@@ -112,7 +112,7 @@ rpds-py==0.10.6
 s3transfer==0.7.0
 seaborn==0.12.2
 Send2Trash>=1.8.0
-setuptools==68.0.0
+setuptools==70.0.0
 sip==6.7.12
 six==1.16.0
 sniffio==1.2.0
