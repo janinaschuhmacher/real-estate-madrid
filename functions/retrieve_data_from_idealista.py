@@ -4,7 +4,7 @@ from requests.structures import CaseInsensitiveDict
 import urllib
 import json
 
-
+# pylint: disable=R0917
 def retrieve_data_from_idealista(
     request_data: str,
     access_token: str,
